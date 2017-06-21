@@ -23,6 +23,17 @@ app.post('/todos',(req,res) => {
   })
 })
 
+app.get('/todos',(req,res) => {
+  Todo.find().then(todos => {
+      res.send({
+        todos,
+        'custom': "This is my own creation"
+      })
+  },(e) => {
+      res.send(e)
+  })
+})
+
 app.listen(PORT,() => {
   console.log('app is running at PORT'+PORT);
 })
