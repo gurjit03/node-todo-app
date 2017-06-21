@@ -19,11 +19,39 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,dbObj) => {
     // })
 
 
-    dbObj.collection('Todos').find().toArray().then((docs) => {
-      console.log(docs);
-      console.log(JSON.stringify(docs),undefined,2)
-    }).catch(err => {
+    // dbObj.collection('Todos').find().toArray().then((docs) => {
+    //   console.log(docs);
+    //   console.log(JSON.stringify(docs),undefined,2)
+    // }).catch(err => {
+    //
+    // })
+    //
+    //
+    // dbObj.collection('Users').findOneAndUpdate({
+    //   _id: new ObjectID("5941793ceb930303733c19a0")
+    // },{
+    //   $set: {
+    //     name: 'gurjit singh'
+    //   }
+    // },{
+    //   returnOriginal: false
+    // }).then((result) => {
+    //   console.log(result)
+    // })
 
+    dbObj.collection('Users').findOneAndUpdate({
+      _id: new ObjectID("5941793ceb930303733c19a0")
+    },{
+      $set: {
+        name: 'gurjit singh mehta'
+      },
+      $inc: {
+        age: 3
+      }
+    },{
+      returnOriginal: false
+    }).then((result) => {
+      console.log(result)
     })
 
     // dbObj.close();
