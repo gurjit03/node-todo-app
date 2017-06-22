@@ -1,6 +1,7 @@
-var {ObjectID} = require('mongodb');
-var express = require('express');
-var bodyParser = require('body-parser');
+const _ = require('lodash');
+const express = require('express');
+const { ObjectID } = require('mongodb');
+const bodyParser = require('body-parser');
 
 var { mongoose } = require('./db/mongoose.js');
 var { User } = require('./models/User.js');
@@ -57,7 +58,7 @@ app.delete('/todo/:id',(req,res) => {
 
   const id = req.params.id;
 
-  if(!Object.isValid(id)) {
+  if(!ObjectID.isValid(id)) {
     return res.status(404).send({
       message: "id is not valid"
     });
@@ -70,7 +71,40 @@ app.delete('/todo/:id',(req,res) => {
     res.send(todo)
   }).catch(e => {
     res.status(400).send(e);
+  })
+})
 
+// updating the todo
+app.patch('/todo/:id',(req,res) => {
+  const id = req.params.id;
+  const updatedProperties = _.pick(req.body,['text','completed']);
+
+  if(!ObjectID.isValid(id)) {
+    return res.status(404).send({
+      message: 'object id is not valid'
+    });
+  }
+
+  if(_.isBoolean(updatedProperties.completed)
+    && updatedProperties.completed) {
+      updatedProperties.completedAt = new Date().getTime();
+  }else {
+      updatedProperties.completed = false;
+      updatedProperties.completedAt = null
+  }
+
+  Todo.findByIdAndUpdate(id,{$set: updatedProperties},{new: true})
+  .then(todo => {
+    if(!todo) {
+      return res.status(400).send({
+        message : 'no todo found'
+      });
+    }
+    res.send(todo);
+  }).catch(e => {
+    res.status(404).send({
+      message: e.message
+    });
   })
 })
 
