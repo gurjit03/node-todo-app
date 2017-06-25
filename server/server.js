@@ -108,6 +108,25 @@ app.patch('/todo/:id',(req,res) => {
   })
 })
 
+
+/******************
+      USERS
+******************/
+app.post('/users',(req,res) => {
+  const props = _.pick(req.body,['email','password']);
+
+  const user = new User(props);
+
+  user.generateAuthToken().then((token) => {
+    res.header('x-auth',token).send(user);
+  }).catch(e => {
+    res.status(404).send({
+      message: e
+    })
+  })
+})
+
+
 app.listen(PORT,() => {
   console.log('app is running at PORT'+PORT);
 })
